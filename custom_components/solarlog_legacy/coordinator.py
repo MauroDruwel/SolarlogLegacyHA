@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import re
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import aiohttp
 from homeassistant.config_entries import ConfigEntry
@@ -176,7 +176,7 @@ class SolarLogCoordinator(DataUpdateCoordinator[SolarLogLegacyData]):
             _LOGGER,
             config_entry=config_entry,
             name="SolarLogLegacy",
-            update_interval=self._scan_interval,
+            update_interval=timedelta(seconds=self._scan_interval),
         )
 
     async def _ensure_session(self) -> aiohttp.ClientSession:
