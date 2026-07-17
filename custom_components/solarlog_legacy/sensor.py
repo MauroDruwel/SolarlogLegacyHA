@@ -25,6 +25,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import SolarLogCoordinator, SolarLogLegacyConfigEntry
+from .entity import SolarLogLegacyEntity
 from .models import SolarLogLegacyData
 
 PARALLEL_UPDATES = 0
