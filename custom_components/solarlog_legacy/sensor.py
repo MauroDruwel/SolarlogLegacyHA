@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any
 
 from homeassistant.components.sensor import (
@@ -20,6 +21,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.util import dt as dt_util
 
 from .coordinator import SolarLogCoordinator, SolarLogLegacyConfigEntry
 from .entity import SolarLogLegacyEntity
@@ -115,19 +117,11 @@ STATIC_SENSORS: tuple[SolarLogLegacySensorEntityDescription, ...] = (
         translation_key="status",
         value_fn=lambda data: data.status_text if data.status_text else None,
     ),
-    SolarLogLegacySensorEntityDescription(
-        key="consumption_ac",
-        translation_key="consumption_ac",
-        native_unit_of_measurement=UnitOfPower.WATT,
-        device_class=SensorDeviceClass.POWER,
-        state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda data: data.consumption_ac if data.consumption_ac > 0 else None,
-    ),
     # Bonus sensors (not in official integration)
     SolarLogLegacySensorEntityDescription(
         key="error_code",
         translation_key="error_code",
-        value_fn=lambda data: data.error_text if data.error_text else None,
+        value_fn=lambda data: data.error_text if data.error_text else ("No error" if data.fehler_codes else None),
     ),
     SolarLogLegacySensorEntityDescription(
         key="num_inverters",
@@ -150,11 +144,12 @@ STATIC_SENSORS: tuple[SolarLogLegacySensorEntityDescription, ...] = (
 
 
 def _parse_timestamp(datum: str, uhrzeit: str) -> datetime | None:
-    """Parse date and time strings into a datetime object."""
+    """Parse date and time strings into a timezone-aware datetime object."""
     if not datum or not uhrzeit:
         return None
     try:
-        return datetime.strptime(f"{datum} {uhrzeit}", "%d.%m.%y %H:%M:%S")
+        dt = datetime.strptime(f"{datum} {uhrzeit}", "%d.%m.%y %H:%M:%S")
+        return dt.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE)
     except ValueError:
         return None
 
@@ -174,19 +169,20 @@ def _build_string_sensors(coordinator: SolarLogCoordinator) -> list[SensorEntity
         if len(wr) > 6 and isinstance(wr[6], list):
             string_names = wr[6]
 
+    real_idx = 0
     for idx, power_val in enumerate(data.apdc):
         # Skip index 0 if it's 0 (some devices put a leading 0)
         if idx == 0 and power_val == 0 and len(data.apdc) > 1:
             continue
 
-        name = string_names[idx] if idx < len(string_names) else f"String {idx}"
+        name = string_names[real_idx] if real_idx < len(string_names) else f"String {real_idx + 1}"
 
         # Power sensor
         entities.append(
             SolarLogStringSensor(
                 coordinator,
                 SolarLogLegacySensorEntityDescription(
-                    key=f"string_{idx}_power",
+                    key=f"string_{real_idx}_power",
                     translation_key="string_power",
                     native_unit_of_measurement=UnitOfPower.WATT,
                     device_class=SensorDeviceClass.POWER,
@@ -203,7 +199,7 @@ def _build_string_sensors(coordinator: SolarLogCoordinator) -> list[SensorEntity
                 SolarLogStringSensor(
                     coordinator,
                     SolarLogLegacySensorEntityDescription(
-                        key=f"string_{idx}_voltage",
+                        key=f"string_{real_idx}_voltage",
                         translation_key="string_voltage",
                         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
                         device_class=SensorDeviceClass.VOLTAGE,
@@ -213,6 +209,8 @@ def _build_string_sensors(coordinator: SolarLogCoordinator) -> list[SensorEntity
                     name,
                 )
             )
+
+        real_idx += 1
 
     return entities
 
