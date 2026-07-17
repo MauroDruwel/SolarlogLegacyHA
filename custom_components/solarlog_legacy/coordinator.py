@@ -26,7 +26,7 @@ from .models import SolarLogLegacyData
 
 _LOGGER = logging.getLogger(__name__)
 
-SolarLogLegacyConfigEntry = ConfigEntry[SolarLogLegacyCoordinator]
+type SolarLogLegacyConfigEntry = ConfigEntry[SolarLogCoordinator]
 
 
 def _fetch_js_var(text: str, name: str) -> str | int | bool | list | None:
