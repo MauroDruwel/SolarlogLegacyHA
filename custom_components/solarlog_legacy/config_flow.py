@@ -6,7 +6,7 @@ from typing import Any
 
 import aiohttp
 import voluptuous as vol
-from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlow
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, OptionsFlow
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
 
@@ -61,11 +61,9 @@ class SolarLogLegacyConfigFlow(ConfigFlow, domain=DOMAIN):
 
     @staticmethod
     @callback
-    def async_get_options_flow(
-        config_entry: ConfigEntry,
-    ) -> SolarLogLegacyOptionsFlow:
+    def async_get_options_flow() -> SolarLogLegacyOptionsFlow:
         """Get the options flow for this handler."""
-        return SolarLogLegacyOptionsFlow(config_entry)
+        return SolarLogLegacyOptionsFlow()
 
     async def _test_connection(self, host: str) -> None:
         """Test if we can connect to the Solar-Log device."""
@@ -86,11 +84,6 @@ class SolarLogLegacyConfigFlow(ConfigFlow, domain=DOMAIN):
 class SolarLogLegacyOptionsFlow(OptionsFlow):
     """Handle options flow for Solar-Log Legacy."""
 
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        """Initialize options flow."""
-        super().__init__()
-        self._config_entry = config_entry
-
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -104,7 +97,7 @@ class SolarLogLegacyOptionsFlow(OptionsFlow):
                 {
                     vol.Optional(
                         CONF_SCAN_INTERVAL,
-                        default=self._config_entry.options.get(
+                        default=self.config_entry.options.get(
                             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
                         ),
                     ): vol.All(
