@@ -3,7 +3,7 @@
   "name": "Solar-Log Legacy",
   "codeowners": ["@MauroDruwel"],
   "config_flow": true,
-  "documentation": "https://github.com/MauroDruwel/solarlog",
+  "documentation": "https://github.com/MauroDruwel/SolarlogLegacyHA",
   "integration_type": "device",
   "iot_class": "local_polling",
   "requirements": [],

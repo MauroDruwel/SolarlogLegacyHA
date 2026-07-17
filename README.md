@@ -13,8 +13,8 @@
 </p>
 
 <p align="center">
-  <img alt="Version" src="https://img.shields.io/github/v/release/MauroDruwel/solarlog"/>
-  <img alt="License" src="https://img.shields.io/github/license/MauroDruwel/solarlog"/>
+  <img alt="Version" src="https://img.shields.io/github/v/release/MauroDruwel/SolarlogLegacyHA"/>
+  <img alt="License" src="https://img.shields.io/github/license/MauroDruwel/SolarlogLegacyHA"/>
   <img alt="HACS" src="https://img.shields.io/badge/HACS-Custom-orange"/>
 </p>
 
@@ -38,13 +38,13 @@ No cloud account. No external dependencies. Just plain HTTP to your Solar-Log.
 
 ### Via HACS (Recommended)
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=MauroDruwel&repository=solarlog)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=MauroDruwel&repository=SolarlogLegacyHA)
 
 <details>
 <summary>Or manually...</summary>
 
 1. Open HACS -> **Integrations** -> **...** -> **Custom repositories**
-2. Add: `https://github.com/MauroDruwel/solarlog`
+2. Add: `https://github.com/MauroDruwel/SolarlogLegacyHA`
 3. Search "Solar-Log Legacy" -> **Download**
 
 </details>
@@ -53,7 +53,7 @@ No cloud account. No external dependencies. Just plain HTTP to your Solar-Log.
 
 ```sh
 cd /config/custom_components
-git clone https://github.com/MauroDruwel/solarlog.git solarlog_legacy
+git clone https://github.com/MauroDruwel/SolarlogLegacyHA.git solarlog_legacy
 ```
 
 ### Then...
@@ -142,7 +142,7 @@ Once configured, you'll get sensors for your solar installation:
 
 ## Issues
 
-Something broken? [Open an issue](https://github.com/MauroDruwel/solarlog/issues) and let's fix it.
+Something broken? [Open an issue](https://github.com/MauroDruwel/SolarlogLegacyHA/issues) and let's fix it.
 
 ## Contributing
 
