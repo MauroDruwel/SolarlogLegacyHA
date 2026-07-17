@@ -242,7 +242,7 @@ class SolarLogCoordinator(DataUpdateCoordinator[SolarLogLegacyData]):
         url = f"{self.host}/{path}"
         async with session.get(url, timeout=aiohttp.ClientTimeout(total=timeout)) as resp:
             resp.raise_for_status()
-            return await resp.text()
+            return await resp.text(encoding="latin-1")
 
     def _parse_min_cur(self, text: str) -> SolarLogLegacyData:
         """Parse min_cur.js into a SolarLogLegacyData object."""
