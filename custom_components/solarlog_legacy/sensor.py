@@ -19,11 +19,8 @@ from homeassistant.const import (
     UnitOfPower,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
 from .coordinator import SolarLogCoordinator, SolarLogLegacyConfigEntry
 from .entity import SolarLogLegacyEntity
 from .models import SolarLogLegacyData
@@ -259,14 +256,6 @@ class SolarLogLegacySensor(SolarLogLegacyEntity, SensorEntity):
 
     entity_description: SolarLogLegacySensorEntityDescription
 
-    def __init__(
-        self,
-        coordinator: SolarLogCoordinator,
-        description: SolarLogLegacySensorEntityDescription,
-    ) -> None:
-        """Initialize the sensor."""
-        super().__init__(coordinator, description)
-
     @property
     def native_value(self) -> float | int | str | None:
         """Return the sensor value."""
@@ -275,11 +264,8 @@ class SolarLogLegacySensor(SolarLogLegacyEntity, SensorEntity):
         return self.entity_description.value_fn(self.coordinator.data)
 
 
-class SolarLogStringSensor(CoordinatorEntity[SolarLogCoordinator], SensorEntity):
+class SolarLogStringSensor(SolarLogLegacyEntity, SensorEntity):
     """Representation of a per-string sensor."""
-
-    _attr_has_entity_name = True
-    _attr_attribution = "Data provided by Solar-Log"
 
     def __init__(
         self,
@@ -288,19 +274,8 @@ class SolarLogStringSensor(CoordinatorEntity[SolarLogCoordinator], SensorEntity)
         string_name: str,
     ) -> None:
         """Initialize the sensor."""
-        super().__init__(coordinator)
-        self.entity_description = description
-        self._string_name = string_name
-        self._attr_unique_id = f"{coordinator.config_entry.entry_id}_{description.key}"
+        super().__init__(coordinator, description)
         self._attr_name = string_name
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, coordinator.config_entry.entry_id)},
-            name="Solar-Log Legacy",
-            manufacturer="Solar-Log",
-            model=coordinator.data.sl_typ if coordinator.data else "Unknown",
-            sw_version=coordinator.data.firmware if coordinator.data else None,
-            configuration_url=coordinator.host,
-        )
 
     @property
     def native_value(self) -> float | int | None:

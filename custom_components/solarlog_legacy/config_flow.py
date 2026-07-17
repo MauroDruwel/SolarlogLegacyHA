@@ -74,7 +74,7 @@ class SolarLogLegacyConfigFlow(ConfigFlow, domain=DOMAIN):
                     timeout=aiohttp.ClientTimeout(total=TIMEOUT_NORMAL),
                 )
                 resp.raise_for_status()
-                text = await resp.text()
+                text = await resp.text(encoding="latin-1")
                 if "var Pac" not in text and "var PacArr" not in text:
                     raise CannotConnect
         except aiohttp.ClientError as err:

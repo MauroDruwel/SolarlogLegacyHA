@@ -5,12 +5,13 @@ from __future__ import annotations
 import logging
 import re
 import time
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import aiohttp
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -167,7 +168,6 @@ class SolarLogCoordinator(DataUpdateCoordinator[SolarLogLegacyData]):
         self._scan_interval: int = config_entry.options.get(
             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
         )
-        self._session: aiohttp.ClientSession | None = None
         self._last_base_vars: float = 0
         self._last_pcjs: float = 0
 
@@ -179,15 +179,9 @@ class SolarLogCoordinator(DataUpdateCoordinator[SolarLogLegacyData]):
             update_interval=timedelta(seconds=self._scan_interval),
         )
 
-    async def _ensure_session(self) -> aiohttp.ClientSession:
-        """Get or create the aiohttp session."""
-        if self._session is None or self._session.closed:
-            self._session = aiohttp.ClientSession()
-        return self._session
-
     async def _async_update_data(self) -> SolarLogLegacyData:
         """Fetch data from Solar-Log device."""
-        session = await self._ensure_session()
+        session = async_get_clientsession(self.hass)
         now = time.time()
 
         # Always fetch min_cur.js (live data, every 60s)
@@ -361,8 +355,3 @@ class SolarLogCoordinator(DataUpdateCoordinator[SolarLogLegacyData]):
             while len(data.wr_info[0]) <= 6:
                 data.wr_info[0].append(None)
             data.wr_info[0][6] = string_names
-
-    async def close(self) -> None:
-        """Close the aiohttp session."""
-        if self._session and not self._session.closed:
-            await self._session.close()
