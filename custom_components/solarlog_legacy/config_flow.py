@@ -61,7 +61,7 @@ class SolarLogLegacyConfigFlow(ConfigFlow, domain=DOMAIN):
 
     @staticmethod
     @callback
-    def async_get_options_flow() -> SolarLogLegacyOptionsFlow:
+    def async_get_options_flow(config_entry) -> SolarLogLegacyOptionsFlow:
         """Get the options flow for this handler."""
         return SolarLogLegacyOptionsFlow()
 
