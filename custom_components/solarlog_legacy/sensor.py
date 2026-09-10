@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import Any
+from datetime import datetime
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -148,7 +147,7 @@ def _parse_timestamp(datum: str, uhrzeit: str) -> datetime | None:
     if not datum or not uhrzeit:
         return None
     try:
-        dt = datetime.strptime(f"{datum} {uhrzeit}", "%d.%m.%y %H:%M:%S")
+        dt = datetime.strptime(f"{datum} {uhrzeit}", "%d.%m.%y %H:%M:%S")  # noqa: DTZ007
         return dt.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE)
     except ValueError:
         return None

@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from unittest.mock import patch
-import pytest
 
 from homeassistant.config_entries import SOURCE_USER
 from homeassistant.const import CONF_HOST

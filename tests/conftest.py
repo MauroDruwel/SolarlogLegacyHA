@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.solarlog_legacy.const import CONF_HOST, DOMAIN
+
 
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(

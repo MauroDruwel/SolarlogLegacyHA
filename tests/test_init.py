@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from unittest.mock import patch
-import pytest
 
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
