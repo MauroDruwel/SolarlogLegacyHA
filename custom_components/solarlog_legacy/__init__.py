@@ -11,7 +11,9 @@ from .coordinator import SolarLogCoordinator, SolarLogLegacyConfigEntry
 PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: SolarLogLegacyConfigEntry) -> bool:
+async def async_setup_entry(
+    hass: HomeAssistant, entry: SolarLogLegacyConfigEntry
+) -> bool:
     """Set up Solar-Log Legacy from a config entry."""
     coordinator = SolarLogCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
@@ -23,7 +25,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: SolarLogLegacyConfigEntr
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: SolarLogLegacyConfigEntry) -> bool:
+async def async_unload_entry(
+    hass: HomeAssistant, entry: SolarLogLegacyConfigEntry
+) -> bool:
     """Unload a config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 

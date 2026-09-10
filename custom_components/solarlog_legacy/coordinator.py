@@ -49,7 +49,9 @@ def _fetch_js_var(text: str, name: str) -> str | int | bool | list | None:
     # Array literal: var Name=[...] or var Name=[[...]]
     arr_match = re.search(r"var\s+" + name + r"\s*=\s*(\[.+?\])\s*[;\n]", text)
     if not arr_match:
-        arr_match = re.search(r"var\s+" + name + r"\s*=\s*(\[.+?\])\s*$", text, re.MULTILINE)
+        arr_match = re.search(
+            r"var\s+" + name + r"\s*=\s*(\[.+?\])\s*$", text, re.MULTILINE
+        )
     if arr_match:
         return _parse_js_array_literal(arr_match.group(1))
 
@@ -161,7 +163,9 @@ class SolarLogCoordinator(DataUpdateCoordinator[SolarLogLegacyData]):
 
     config_entry: SolarLogLegacyConfigEntry
 
-    def __init__(self, hass: HomeAssistant, config_entry: SolarLogLegacyConfigEntry) -> None:
+    def __init__(
+        self, hass: HomeAssistant, config_entry: SolarLogLegacyConfigEntry
+    ) -> None:
         """Initialize the coordinator."""
         self.host: str = config_entry.data[CONF_HOST].rstrip("/")
         self._scan_interval: int = config_entry.options.get(
@@ -230,10 +234,14 @@ class SolarLogCoordinator(DataUpdateCoordinator[SolarLogLegacyData]):
         data.compute_derived()
         return data
 
-    async def _fetch_js(self, session: aiohttp.ClientSession, path: str, timeout: int) -> str:
+    async def _fetch_js(
+        self, session: aiohttp.ClientSession, path: str, timeout: int
+    ) -> str:
         """Fetch a JS file from the device."""
         url = f"{self.host}/{path}"
-        async with session.get(url, timeout=aiohttp.ClientTimeout(total=timeout)) as resp:
+        async with session.get(
+            url, timeout=aiohttp.ClientTimeout(total=timeout)
+        ) as resp:
             resp.raise_for_status()
             return await resp.text(encoding="latin-1")
 
@@ -255,15 +263,38 @@ class SolarLogCoordinator(DataUpdateCoordinator[SolarLogLegacyData]):
 
         val = _fetch_js_var(text, "aPdc")
         if val is not None and isinstance(val, list):
-            data.apdc = [int(x) if isinstance(x, str) and x.isdigit() else (x if isinstance(x, int) else 0) for x in val]
+            data.apdc = [
+                int(x)
+                if isinstance(x, str) and x.isdigit()
+                else (x if isinstance(x, int) else 0)
+                for x in val
+            ]
 
         val = _fetch_js_var(text, "PacArr")
         if val is not None and isinstance(val, list):
-            data.pacarr = [[int(x) if isinstance(x, str) and x.isdigit() else (x if isinstance(x, int) else 0) for x in inner] for inner in val if isinstance(inner, list)]
+            data.pacarr = [
+                [
+                    int(x)
+                    if isinstance(x, str) and x.isdigit()
+                    else (x if isinstance(x, int) else 0)
+                    for x in inner
+                ]
+                for inner in val
+                if isinstance(inner, list)
+            ]
 
         val = _fetch_js_var(text, "PdcArr")
         if val is not None and isinstance(val, list):
-            data.pdcarr = [[int(x) if isinstance(x, str) and x.isdigit() else (x if isinstance(x, int) else 0) for x in inner] for inner in val if isinstance(inner, list)]
+            data.pdcarr = [
+                [
+                    int(x)
+                    if isinstance(x, str) and x.isdigit()
+                    else (x if isinstance(x, int) else 0)
+                    for x in inner
+                ]
+                for inner in val
+                if isinstance(inner, list)
+            ]
 
         # curStatusCode is defined as array then assigned per index
         match = re.search(r"var\s+curStatusCode\s*=\s*new Array\((\d+)\)", text)
@@ -324,17 +355,13 @@ class SolarLogCoordinator(DataUpdateCoordinator[SolarLogLegacyData]):
 
         # Parse StatusCodes array (defined per inverter)
         for i in range(data.anzahl_wr or 1):
-            match = re.search(
-                r'StatusCodes\[' + str(i) + r'\]\s*=\s*"([^"]*)"', text
-            )
+            match = re.search(r"StatusCodes\[" + str(i) + r'\]\s*=\s*"([^"]*)"', text)
             if match:
                 data.status_codes.append(match.group(1))
 
         # Parse FehlerCodes array (defined per inverter)
         for i in range(data.anzahl_wr or 1):
-            match = re.search(
-                r'FehlerCodes\[' + str(i) + r'\]\s*=\s*"([^"]*)"', text
-            )
+            match = re.search(r"FehlerCodes\[" + str(i) + r'\]\s*=\s*"([^"]*)"', text)
             if match:
                 data.fehler_codes.append(match.group(1))
 
@@ -345,9 +372,7 @@ class SolarLogCoordinator(DataUpdateCoordinator[SolarLogLegacyData]):
             data.wr_info = [items]
 
         # Parse WRInfo[0][6] string names (set separately)
-        match = re.search(
-            r'WRInfo\[(\d+)\]\[(\d+)\]\s*=\s*new Array\(([^)]+)\)', text
-        )
+        match = re.search(r"WRInfo\[(\d+)\]\[(\d+)\]\s*=\s*new Array\(([^)]+)\)", text)
         if match and data.wr_info:
             string_names = [x.strip().strip('"') for x in match.group(3).split(",")]
             # Pad wr_info if needed

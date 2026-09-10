@@ -1,4 +1,5 @@
 """Tests for the Solar-Log Legacy config and options flow."""
+
 from __future__ import annotations
 
 from unittest.mock import patch

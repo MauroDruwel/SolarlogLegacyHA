@@ -120,7 +120,11 @@ STATIC_SENSORS: tuple[SolarLogLegacySensorEntityDescription, ...] = (
     SolarLogLegacySensorEntityDescription(
         key="error_code",
         translation_key="error_code",
-        value_fn=lambda data: data.error_text if data.error_text else ("No error" if data.fehler_codes else None),
+        value_fn=lambda data: (
+            data.error_text
+            if data.error_text
+            else ("No error" if data.fehler_codes else None)
+        ),
     ),
     SolarLogLegacySensorEntityDescription(
         key="num_inverters",
@@ -174,7 +178,11 @@ def _build_string_sensors(coordinator: SolarLogCoordinator) -> list[SensorEntity
         if idx == 0 and power_val == 0 and len(data.apdc) > 1:
             continue
 
-        name = string_names[real_idx] if real_idx < len(string_names) else f"String {real_idx + 1}"
+        name = (
+            string_names[real_idx]
+            if real_idx < len(string_names)
+            else f"String {real_idx + 1}"
+        )
 
         # Power sensor
         entities.append(
