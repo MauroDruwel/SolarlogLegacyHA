@@ -1,0 +1,82 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Verbinden met Solar-Log",
+        "description": "Voer het lokale IP-adres of hostnaam van je Solar-Log apparaat in.",
+        "data": {
+          "host": "Host"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan niet verbinden met Solar-Log apparaat",
+      "unknown": "Onverwachte fout"
+    },
+    "abort": {
+      "already_configured_device": "Dit Solar-Log apparaat is al geconfigureerd"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opties",
+        "data": {
+          "scan_interval": "Update-interval (seconden)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "power_ac": {
+        "name": "Vermogen AC"
+      },
+      "power_dc": {
+        "name": "Vermogen DC"
+      },
+      "voltage_dc": {
+        "name": "Spanning DC"
+      },
+      "total_power": {
+        "name": "Geïnstalleerd piekvermogen"
+      },
+      "alternator_loss": {
+        "name": "Omvormerverlies"
+      },
+      "capacity": {
+        "name": "Capaciteit"
+      },
+      "efficiency": {
+        "name": "Rendement"
+      },
+      "last_update": {
+        "name": "Laatste update"
+      },
+      "yield_day": {
+        "name": "Dagopbrengst"
+      },
+      "status": {
+        "name": "Status"
+      },
+      "error_code": {
+        "name": "Foutcode"
+      },
+      "num_inverters": {
+        "name": "Aantal omvormers"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "inverter_model": {
+        "name": "Omvormermodel"
+      },
+      "string_power": {
+        "name": "{string_name} vermogen"
+      },
+      "string_voltage": {
+        "name": "{string_name} spanning"
+      }
+    }
+  }
+}
